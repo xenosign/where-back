@@ -37,4 +37,4 @@ out/
 .vscode/
 
 # Properties
-src/main/resources/temp.properties
+src/main/resources/application-local.yaml
