@@ -1,5 +1,6 @@
 package go.tetz.where_back.auth.util;
 
+import go.tetz.where_back.auth.jwt.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

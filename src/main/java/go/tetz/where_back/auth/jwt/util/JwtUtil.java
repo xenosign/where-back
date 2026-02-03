@@ -1,6 +1,8 @@
-package go.tetz.where_back.auth.util;
+package go.tetz.where_back.auth.jwt.util;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,7 +16,7 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Value("${jwt.expiration}")
+    @Value("${jwt.expiration}") // 24시간 (밀리초)
     private long jwtExpiration;
 
     private SecretKey getSigningKey() {
