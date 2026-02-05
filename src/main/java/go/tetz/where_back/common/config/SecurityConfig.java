@@ -1,4 +1,4 @@
-package go.tetz.where_back.common.security;
+package go.tetz.where_back.common.config;
 
 import go.tetz.where_back.auth.jwt.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
