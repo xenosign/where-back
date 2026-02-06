@@ -45,7 +45,6 @@ public class UserService {
     }
 
     private UserEntity updateUserInfo(UserEntity user, KakaoUserInfo kakaoUserInfo) {
-        // 기존 사용자 정보 업데이트
         String nickname = getNicknameFromKakaoInfo(kakaoUserInfo);
         String profileImageUrl = getProfileImageFromKakaoInfo(kakaoUserInfo);
 
@@ -77,9 +76,7 @@ public class UserService {
         return savedUser;
     }
 
-    // 카카오 정보에서 닉네임 추출 (우선순위: profile > properties)
     private String getNicknameFromKakaoInfo(KakaoUserInfo kakaoUserInfo) {
-        // 1순위: kakao_account.profile.nickname
         if (kakaoUserInfo.getKakaoAccount() != null &&
                 kakaoUserInfo.getKakaoAccount().getProfile() != null) {
             String profileNickname = kakaoUserInfo.getKakaoAccount().getProfile().getNickname();
@@ -96,13 +93,10 @@ public class UserService {
             }
         }
 
-        // 기본값
-        return "카카오사용자";
+        return "카카오";
     }
 
-    // 카카오 정보에서 프로필 이미지 추출 (우선순위: profile > properties)
     private String getProfileImageFromKakaoInfo(KakaoUserInfo kakaoUserInfo) {
-        // 1순위: kakao_account.profile.profile_image_url
         if (kakaoUserInfo.getKakaoAccount() != null &&
                 kakaoUserInfo.getKakaoAccount().getProfile() != null) {
             String profileImageUrl = kakaoUserInfo.getKakaoAccount().getProfile().getProfileImageUrl();
@@ -111,7 +105,6 @@ public class UserService {
             }
         }
 
-        // 2순위: properties.profile_image
         if (kakaoUserInfo.getProperties() != null) {
             String propertiesProfileImage = kakaoUserInfo.getProperties().getProfileImage();
             if (propertiesProfileImage != null && !propertiesProfileImage.trim().isEmpty()) {
@@ -119,7 +112,6 @@ public class UserService {
             }
         }
 
-        // 기본값
         return null;
     }
 
