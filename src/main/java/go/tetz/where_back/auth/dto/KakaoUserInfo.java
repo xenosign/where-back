@@ -1,4 +1,4 @@
-package go.tetz.where_back.user.domain;
+package go.tetz.where_back.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
