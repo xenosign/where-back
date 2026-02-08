@@ -7,8 +7,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/")
 public class HomeController {
-    @GetMapping("")
+    @GetMapping(produces = "text/html")
     public String home() {
-        return "Where-Back";
+        return """
+            <!DOCTYPE html>
+            <html lang="ko">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Where📍</title>
+            </head>
+            <body>
+                <a href="./swagger-ui/index.html" target="_blank">
+                    <h1>🚀 스웨거 바로가기</h1>
+                </a>
+                <a href="./api/auth/kakao/backend" target="_blank">
+                    <h1>🍪 카카오 로그인 임시 테스트 - 백엔드 응답</h1>
+                </a>
+            </body>
+            </html>
+            """;
     }
 }
