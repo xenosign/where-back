@@ -1,12 +1,11 @@
-package go.tetz.where_back.auth.service;
+package go.tetz.where_back.user.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import go.tetz.where_back.auth.dto.AuthResponse;
-import go.tetz.where_back.auth.dto.KakaoTokenResponse;
-import go.tetz.where_back.auth.dto.KakaoUserInfo;
-import go.tetz.where_back.auth.jwt.util.JwtUtil;
+import go.tetz.where_back.user.dto.AuthResponse;
+import go.tetz.where_back.user.dto.KakaoTokenResponse;
+import go.tetz.where_back.user.dto.KakaoUserInfo;
+import go.tetz.where_back.common.jwt.util.JwtUtil;
 import go.tetz.where_back.user.domain.UserEntity;
-import go.tetz.where_back.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

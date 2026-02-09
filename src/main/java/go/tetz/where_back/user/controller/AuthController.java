@@ -1,7 +1,7 @@
-package go.tetz.where_back.auth.controller;
+package go.tetz.where_back.user.controller;
 
-import go.tetz.where_back.auth.dto.AuthResponse;
-import go.tetz.where_back.auth.service.AuthService;
+import go.tetz.where_back.user.dto.AuthResponse;
+import go.tetz.where_back.user.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

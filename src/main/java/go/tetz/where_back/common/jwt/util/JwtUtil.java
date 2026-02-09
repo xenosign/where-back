@@ -1,4 +1,4 @@
-package go.tetz.where_back.auth.jwt.util;
+package go.tetz.where_back.common.jwt.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

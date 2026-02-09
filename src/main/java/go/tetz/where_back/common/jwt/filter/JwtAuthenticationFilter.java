@@ -1,6 +1,6 @@
-package go.tetz.where_back.auth.jwt.filter;
+package go.tetz.where_back.common.jwt.filter;
 
-import go.tetz.where_back.auth.jwt.util.JwtUtil;
+import go.tetz.where_back.common.jwt.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

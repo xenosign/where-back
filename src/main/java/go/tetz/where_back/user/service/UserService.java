@@ -1,6 +1,6 @@
 package go.tetz.where_back.user.service;
 
-import go.tetz.where_back.auth.dto.KakaoUserInfo;
+import go.tetz.where_back.user.dto.KakaoUserInfo;
 import go.tetz.where_back.user.domain.UserEntity;
 import go.tetz.where_back.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

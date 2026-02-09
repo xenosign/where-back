@@ -1,6 +1,6 @@
 package go.tetz.where_back.common.config;
 
-import go.tetz.where_back.auth.jwt.filter.JwtAuthenticationFilter;
+import go.tetz.where_back.common.jwt.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

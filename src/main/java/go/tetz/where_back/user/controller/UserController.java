@@ -1,6 +1,6 @@
 package go.tetz.where_back.user.controller;
 
-import go.tetz.where_back.auth.util.AuthenticationUtil;
+import go.tetz.where_back.user.util.AuthenticationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
