@@ -1,4 +1,4 @@
-package go.tetz.where_back.user.domain;
+package go.tetz.where_back.user.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

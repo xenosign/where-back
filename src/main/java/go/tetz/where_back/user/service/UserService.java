@@ -1,7 +1,7 @@
 package go.tetz.where_back.user.service;
 
 import go.tetz.where_back.user.dto.KakaoUserInfo;
-import go.tetz.where_back.user.domain.UserEntity;
+import go.tetz.where_back.user.entity.UserEntity;
 import go.tetz.where_back.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
