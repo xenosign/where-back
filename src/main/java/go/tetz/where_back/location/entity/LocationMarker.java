@@ -17,22 +17,22 @@ public class LocationMarker {
     private Long id;
 
     @Column(nullable = false)
-    private String name; // 장소 이름 (예: 강남역 11번 출구)
+    private String name;
 
     @Column(nullable = false)
-    private Double latitude; // 위도
+    private Double latitude;
 
     @Column(nullable = false)
-    private Double longitude; // 경도
+    private Double longitude;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String type; // 마커 종류 (BASE, ITEM_SHOP, SAFE_ZONE 등)
+    private MarkerType type;
 
-    private String description; // 장소 설명
+    private String description;
 
     @Builder
-    public LocationMarker(String name, Double latitude, Double longitude, String type, String description) {
+    public LocationMarker(String name, Double latitude, Double longitude, MarkerType type, String description) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
