@@ -26,7 +26,7 @@ public class LocationService {
 
         double distance = calculateDistance(userLat, userLng, marker.getLatitude(), marker.getLongitude());
 
-        return distance <= (thresholdMeter / 1000.0); // m를 km로 변환하여 비교
+        return distance <= (thresholdMeter / 1000.0);
     }
 
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
