@@ -1,4 +1,4 @@
-package go.tetz.where_back.game.config;
+package go.tetz.where_back.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
