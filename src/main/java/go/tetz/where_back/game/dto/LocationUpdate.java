@@ -5,9 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * WebSocket으로 실시간 전송되는 사용자 위치 정보
- */
 @Getter
 @Builder
 @NoArgsConstructor

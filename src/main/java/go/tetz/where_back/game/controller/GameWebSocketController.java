@@ -11,10 +11,6 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-/**
- * WebSocket 실시간 메시지 핸들러
- * - /app/game/{roomId}/location → 위치 업데이트 수신 후 /topic/game/{roomId}/location 로 브로드캐스트
- */
 @Controller
 @RequiredArgsConstructor
 @Slf4j
