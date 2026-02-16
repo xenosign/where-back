@@ -31,12 +31,17 @@ public class LocationMarker {
 
     private String description;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "region_id", nullable = false)
+    private Region region;
+
     @Builder
-    public LocationMarker(String name, Double latitude, Double longitude, MarkerType type, String description) {
+    public LocationMarker(String name, Double latitude, Double longitude, MarkerType type, String description, Region region) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.type = type;
         this.description = description;
+        this.region = region;
     }
 }

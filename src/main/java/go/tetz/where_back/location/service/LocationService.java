@@ -1,7 +1,9 @@
 package go.tetz.where_back.location.service;
 
 import go.tetz.where_back.location.entity.LocationMarker;
+import go.tetz.where_back.location.entity.Region;
 import go.tetz.where_back.location.repository.LocationMarkerRepository;
+import go.tetz.where_back.location.repository.RegionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import java.util.Optional;
 public class LocationService {
 
     private final LocationMarkerRepository markerRepository;
+    private final RegionRepository regionRepository;
 
     public List<LocationMarker> getSurroundingMarkers(Double lat, Double lng, Double radius) {
         return markerRepository.findMarkersWithinRadius(lat, lng, radius);
@@ -45,5 +48,30 @@ public class LocationService {
 
     public Optional<LocationMarker> getMarkerById(Long id) {
         return markerRepository.findById(id);
+    }
+
+    public List<LocationMarker> getMarkersByRegionId(Long regionId) {
+        return markerRepository.findByRegionId(regionId);
+    }
+
+    public List<LocationMarker> getMarkersByRegionName(String regionName) {
+        return markerRepository.findByRegionName(regionName);
+    }
+
+    @Transactional
+    public Region saveRegion(Region region) {
+        return regionRepository.save(region);
+    }
+
+    public Optional<Region> getRegionById(Long id) {
+        return regionRepository.findById(id);
+    }
+
+    public Optional<Region> getRegionByName(String name) {
+        return regionRepository.findByName(name);
+    }
+
+    public List<Region> getAllRegions() {
+        return regionRepository.findAll();
     }
 }
