@@ -85,7 +85,6 @@ public class UserService {
             }
         }
 
-        // 2순위: properties.nickname
         if (kakaoUserInfo.getProperties() != null) {
             String propertiesNickname = kakaoUserInfo.getProperties().getNickname();
             if (propertiesNickname != null && !propertiesNickname.trim().isEmpty()) {

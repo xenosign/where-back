@@ -36,7 +36,6 @@ public class AuthController {
         return new RedirectView(kakaoLoginUrl);
     }
 
-    // JWT 토큰 백엔드 확인용 엔드 포인트
     @GetMapping("/kakao/backend")
     public RedirectView kakaoLoginForBackend() {
         String kakaoLoginUrl = authService.getKakaoLoginUrl("backend");
@@ -91,10 +90,9 @@ public class AuthController {
         try {
             AuthResponse authResponse = authService.processKakaoLogin(accessToken);
 
-            // JWT 토큰을 쿠키에 설정
             Cookie jwtCookie = new Cookie("jwt", authResponse.getAccessToken());
             jwtCookie.setHttpOnly(true);
-            jwtCookie.setSecure(true); // 개발환경에서는 false
+            jwtCookie.setSecure(true);
             jwtCookie.setPath("/");
             jwtCookie.setMaxAge((int) (jwtExpiration / 1000));
             jwtCookie.setAttribute("SameSite", "None");
@@ -109,13 +107,12 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletResponse response) {
-        // JWT 쿠키 삭제
+    public ResponseEntity<Void> logout(HttpServletResponse response) {        
         Cookie jwtCookie = new Cookie("jwt", "");
         jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(true); // 개발환경에서는 false
+        jwtCookie.setSecure(true);
         jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(0); // 즉시 만료
+        jwtCookie.setMaxAge(0);
         jwtCookie.setAttribute("SameSite", "None");
 
         response.addCookie(jwtCookie);
