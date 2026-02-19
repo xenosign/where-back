@@ -11,6 +11,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.security.Principal;
+
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -22,13 +24,25 @@ public class GameWebSocketController {
     @MessageMapping("/game/{roomId}/location")
     public void handleLocationUpdate(
             @DestinationVariable Long roomId,
-            @Payload LocationUpdate update) {
+            @Payload LocationUpdate update,
+            Principal principal) {
+        if (principal == null) {
+            log.warn("인증되지 않은 위치 업데이트 차단: roomId={}", roomId);
+            return;
+        }
+
+        Long userId = Long.valueOf(principal.getName());
         if (update.getLatitude() == null || update.getLongitude() == null) {
             return;
         }
 
+        if (!gameRoomQueryService.isParticipant(roomId, userId)) {
+            log.warn("방 참가자가 아닌 사용자의 위치 업데이트 차단: roomId={}, userId={}", roomId, userId);
+            return;
+        }
+
         PlayerLocationDto dto = gameRoomQueryService.toPlayerLocationDto(
-                update.getUserId(),
+                userId,
                 update.getLatitude(),
                 update.getLongitude(),
                 update.getTimestamp());
@@ -36,7 +50,7 @@ public class GameWebSocketController {
         if (dto != null) {
             String destination = "/topic/game/" + roomId + "/location";
             messagingTemplate.convertAndSend(destination, dto);
-            log.debug("위치 브로드캐스트: roomId={}, userId={}", roomId, update.getUserId());
+            log.debug("위치 브로드캐스트: roomId={}, userId={}", roomId, userId);
         }
     }
 }
