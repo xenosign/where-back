@@ -58,7 +58,7 @@ public class UserService {
     }
 
     private UserEntity createUserFromKakaoInfo(KakaoUserInfo kakaoUserInfo) {
-        String email = kakaoUserInfo.getKakaoAccount().getEmail();
+        String email = getEmailFromKakaoInfo(kakaoUserInfo);
         String nickname = getNicknameFromKakaoInfo(kakaoUserInfo);
         String profileImageUrl = getProfileImageFromKakaoInfo(kakaoUserInfo);
 
@@ -74,6 +74,16 @@ public class UserService {
                 savedUser.getKakaoId(), savedUser.getEmail(), savedUser.getNickname());
 
         return savedUser;
+    }
+
+    private String getEmailFromKakaoInfo(KakaoUserInfo kakaoUserInfo) {
+        if (kakaoUserInfo.getKakaoAccount() != null) {
+            String email = kakaoUserInfo.getKakaoAccount().getEmail();
+            if (email != null && !email.trim().isEmpty()) {
+                return email;
+            }
+        }
+        return "kakao_" + kakaoUserInfo.getId() + "@where.local";
     }
 
     private String getNicknameFromKakaoInfo(KakaoUserInfo kakaoUserInfo) {
