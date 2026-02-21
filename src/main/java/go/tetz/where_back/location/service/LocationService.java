@@ -1,5 +1,9 @@
 package go.tetz.where_back.location.service;
 
+import go.tetz.where_back.location.dto.CreateMarkerRequest;
+import go.tetz.where_back.location.dto.CreateRegionRequest;
+import go.tetz.where_back.location.dto.MarkerResponse;
+import go.tetz.where_back.location.dto.RegionResponse;
 import go.tetz.where_back.location.entity.LocationMarker;
 import go.tetz.where_back.location.entity.Region;
 import go.tetz.where_back.location.repository.LocationMarkerRepository;
@@ -10,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +26,12 @@ public class LocationService {
 
     public List<LocationMarker> getSurroundingMarkers(Double lat, Double lng, Double radius) {
         return markerRepository.findMarkersWithinRadius(lat, lng, radius);
+    }
+
+    public List<MarkerResponse> getSurroundingMarkerResponses(Double lat, Double lng, Double radius) {
+        return markerRepository.findMarkersWithinRadius(lat, lng, radius).stream()
+                .map(MarkerResponse::from)
+                .collect(Collectors.toList());
     }
 
     public boolean isUserAtMarker(Double userLat, Double userLng, Long markerId, Double thresholdMeter) {
@@ -46,16 +57,40 @@ public class LocationService {
         return markerRepository.save(marker);
     }
 
+    @Transactional
+    public MarkerResponse createMarker(CreateMarkerRequest request) {
+        Region region = regionRepository.findById(request.getRegionId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
+        LocationMarker marker = LocationMarker.builder()
+                .name(request.getName())
+                .latitude(request.getLatitude())
+                .longitude(request.getLongitude())
+                .type(request.getType())
+                .description(request.getDescription())
+                .region(region)
+                .build();
+        marker = markerRepository.save(marker);
+        return MarkerResponse.from(marker);
+    }
+
     public Optional<LocationMarker> getMarkerById(Long id) {
         return markerRepository.findById(id);
     }
 
-    public List<LocationMarker> getMarkersByRegionId(Long regionId) {
-        return markerRepository.findByRegionId(regionId);
+    public Optional<MarkerResponse> getMarkerResponseById(Long id) {
+        return markerRepository.findById(id).map(MarkerResponse::from);
     }
 
-    public List<LocationMarker> getMarkersByRegionName(String regionName) {
-        return markerRepository.findByRegionName(regionName);
+    public List<MarkerResponse> getMarkersByRegionId(Long regionId) {
+        return markerRepository.findByRegionId(regionId).stream()
+                .map(MarkerResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    public List<MarkerResponse> getMarkersByRegionName(String regionName) {
+        return markerRepository.findByRegionName(regionName).stream()
+                .map(MarkerResponse::from)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -63,15 +98,32 @@ public class LocationService {
         return regionRepository.save(region);
     }
 
+    @Transactional
+    public RegionResponse createRegion(CreateRegionRequest request) {
+        Region region = Region.builder()
+                .name(request.getName())
+                .country(request.getCountry())
+                .description(request.getDescription())
+                .build();
+        region = regionRepository.save(region);
+        return RegionResponse.from(region);
+    }
+
     public Optional<Region> getRegionById(Long id) {
         return regionRepository.findById(id);
+    }
+
+    public Optional<RegionResponse> getRegionResponseById(Long id) {
+        return regionRepository.findById(id).map(RegionResponse::from);
     }
 
     public Optional<Region> getRegionByName(String name) {
         return regionRepository.findByName(name);
     }
 
-    public List<Region> getAllRegions() {
-        return regionRepository.findAll();
+    public List<RegionResponse> getAllRegions() {
+        return regionRepository.findAll().stream()
+                .map(RegionResponse::from)
+                .collect(Collectors.toList());
     }
 }
