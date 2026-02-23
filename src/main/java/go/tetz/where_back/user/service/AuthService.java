@@ -24,8 +24,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class AuthService {
     private final UserService userService;
     private final JwtUtil jwtUtil;
-    private final RestTemplate restTemplate = new RestTemplate();
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
     @Value("${kakao.client-id}")
     private String kakaoClientId;
