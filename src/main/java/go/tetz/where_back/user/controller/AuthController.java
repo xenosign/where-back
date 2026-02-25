@@ -21,7 +21,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @Value("${kakao.cookie-secure}")
+    @Value("${kakao.cookie-secure:false}")
     private boolean kakaoCookieSecure;
 
     @Value("${jwt.expiration}")
@@ -92,7 +92,7 @@ public class AuthController {
 
             Cookie jwtCookie = new Cookie("jwt", authResponse.getAccessToken());
             jwtCookie.setHttpOnly(true);
-            jwtCookie.setSecure(true);
+            jwtCookie.setSecure(kakaoCookieSecure);
             jwtCookie.setPath("/");
             jwtCookie.setMaxAge((int) (jwtExpiration / 1000));
             jwtCookie.setAttribute("SameSite", "None");
@@ -107,10 +107,10 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletResponse response) {        
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
         Cookie jwtCookie = new Cookie("jwt", "");
         jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(true);
+        jwtCookie.setSecure(kakaoCookieSecure);
         jwtCookie.setPath("/");
         jwtCookie.setMaxAge(0);
         jwtCookie.setAttribute("SameSite", "None");

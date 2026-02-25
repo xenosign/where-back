@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update  # create: 테이블 삭제 후 재생성, update: 스키마 변경만 적용
     show-sql: true
     properties:
       hibernate:
