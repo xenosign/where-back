@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Where Back - API 테스트</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #1a1a2e; color: #eee; }
+    h1 { color: #0f3460; }
+    section { background: #16213e; padding: 16px; border-radius: 8px; margin-bottom: 16px; }
+    h2 { margin-top: 0; color: #e94560; font-size: 1rem; }
+    button { padding: 8px 16px; margin: 4px; cursor: pointer; border: none; border-radius: 6px; background: #e94560; color: white; }
+    button:hover { background: #c73e54; }
+    button.secondary { background: #0f3460; }
+    input, textarea { padding: 8px; margin: 4px; border-radius: 6px; border: 1px solid #0f3460; background: #1a1a2e; color: #eee; }
+    pre { background: #0f3460; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 12px; }
+    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    label { min-width: 80px; }
+    p.note { font-size: 12px; color: #888; }
+  </style>
+</head>
+<body>
+  <h1>Where Back API 테스트</h1>
+  <p class="note">※ 백엔드(localhost:8080) 실행 후, 이 페이지를 Live Server 등으로 http://127.0.0.1:5500 에서 열어주세요. (CORS/쿠키 동작)</p>
+  
+  <section>
+    <h2>🔧 설정</h2>
+    <div class="row">
+      <label>API Base</label>
+      <input type="text" id="baseUrl" value="http://localhost:8080" style="width: 280px;">
+      <label>JWT (테스트용)</label>
+      <input type="text" id="jwtToken" placeholder="Bearer 생략하고 토큰만" style="width: 200px;">
+    </div>
+  </section>
+
+  <section>
+    <h2>🔐 인증</h2>
+    <div class="row">
+      <button onclick="openKakaoLogin()">카카오 로그인 (리다이렉트)</button>
+      <button class="secondary" onclick="getKakaoUrl()">카카오 로그인 URL 조회</button>
+      <button class="secondary" onclick="logout()">로그아웃</button>
+    </div>
+    <p class="note">카카오 로그인 후 JWT가 쿠키에 저장됩니다. 아래 API는 credentials 포함 요청으로 쿠키 자동 전송.</p>
+  </section>
+
+  <section>
+    <h2>🎮 게임</h2>
+    <div class="row">
+      <button onclick="getWaitingRooms()">대기 방 목록</button>
+      <button onclick="createRoom()">방 생성</button>
+      <input type="number" id="roomId" placeholder="방ID" style="width: 60px;">
+      <button onclick="getRoom()">방 조회</button>
+      <button onclick="joinRoom()">참가</button>
+      <button onclick="leaveRoom()">퇴장</button>
+      <button onclick="setReady()">준비</button>
+      <button onclick="startGame()">게임 시작</button>
+    </div>
+    <input type="text" id="roomName" placeholder="방 이름" value="테스트방" style="width: 120px;">
+  </section>
+
+  <section>
+    <h2>📍 위치</h2>
+    <div class="row">
+      <button onclick="getNearbyMarkers()">근처 마커</button>
+      <input type="number" id="lat" placeholder="위도" value="37.5665" step="0.0001" style="width: 100px;">
+      <input type="number" id="lng" placeholder="경도" value="126.9780" step="0.0001" style="width: 100px;">
+      <input type="number" id="radius" placeholder="반경(km)" value="0.5" step="0.1" style="width: 80px;">
+    </div>
+    <div class="row" style="margin-top: 8px;">
+      <button class="secondary" onclick="getRegions()">전체 지역 목록</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>👤 사용자</h2>
+    <button onclick="getMe()">내 정보 (/api/user/me)</button>
+  </section>
+
+  <section>
+    <h2>📤 응답</h2>
+    <pre id="output">여기에 응답이 표시됩니다.</pre>
+  </section>
+
+  <script>
+    const out = document.getElementById('output');
+    const base = () => document.getElementById('baseUrl').value.replace(/\/$/, '');
+    const token = () => document.getElementById('jwtToken').value.trim();
+
+    function opts(useCreds = true) {
+      const o = { headers: {} };
+      if (token()) o.headers['Authorization'] = 'Bearer ' + token();
+      if (useCreds) o.credentials = 'include';
+      return o;
+    }
+
+    function json(body) {
+      if (typeof body === 'object') return JSON.stringify(body, null, 2);
+      return body;
+    }
+
+    async function api(method, path, body) {
+      try {
+        const options = { ...opts(), method };
+        if (body) {
+          options.headers['Content-Type'] = 'application/json';
+          options.body = JSON.stringify(body);
+        }
+        const res = await fetch(base() + path, options);
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch { data = text; }
+        out.textContent = `[${res.status}] ${json(data)}`;
+      } catch (e) {
+        out.textContent = 'Error: ' + e.message;
+      }
+    }
+
+    function openKakaoLogin() {
+      window.location.href = base() + '/api/auth/kakao/backend';
+    }
+
+    async function getKakaoUrl() {
+      await api('GET', '/api/auth/kakao/url');
+    }
+
+    async function logout() {
+      await api('POST', '/api/auth/logout');
+    }
+
+    async function getWaitingRooms() {
+      await api('GET', '/api/game/rooms');
+    }
+
+    async function createRoom() {
+      const name = document.getElementById('roomName').value || '테스트방';
+      await api('POST', '/api/game/rooms', { name, maxPlayers: 8 });
+    }
+
+    async function getRoom() {
+      const id = document.getElementById('roomId').value;
+      if (!id) { out.textContent = '방 ID를 입력하세요.'; return; }
+      await api('GET', '/api/game/rooms/' + id);
+    }
+
+    async function joinRoom() {
+      const id = document.getElementById('roomId').value;
+      if (!id) { out.textContent = '방 ID를 입력하세요.'; return; }
+      await api('POST', '/api/game/rooms/' + id + '/join');
+    }
+
+    async function leaveRoom() {
+      const id = document.getElementById('roomId').value;
+      if (!id) { out.textContent = '방 ID를 입력하세요.'; return; }
+      await api('POST', '/api/game/rooms/' + id + '/leave');
+    }
+
+    async function setReady() {
+      const id = document.getElementById('roomId').value;
+      if (!id) { out.textContent = '방 ID를 입력하세요.'; return; }
+      await api('PATCH', '/api/game/rooms/' + id + '/ready?ready=true');
+    }
+
+    async function startGame() {
+      const id = document.getElementById('roomId').value;
+      if (!id) { out.textContent = '방 ID를 입력하세요.'; return; }
+      await api('POST', '/api/game/rooms/' + id + '/start');
+    }
+
+    async function getNearbyMarkers() {
+      const lat = document.getElementById('lat').value || 37.5665;
+      const lng = document.getElementById('lng').value || 126.9780;
+      const radius = document.getElementById('radius').value || 0.5;
+      await api('GET', `/api/location/markers?lat=${lat}&lng=${lng}&radius=${radius}`);
+    }
+
+    async function getRegions() {
+      await api('GET', '/api/location/regions');
+    }
+
+    async function getMe() {
+      await api('GET', '/api/user/me');
+    }
+  </script>
+</body>
+</html>
