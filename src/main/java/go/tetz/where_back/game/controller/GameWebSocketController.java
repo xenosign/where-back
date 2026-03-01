@@ -3,6 +3,7 @@ package go.tetz.where_back.game.controller;
 import go.tetz.where_back.game.dto.LocationUpdate;
 import go.tetz.where_back.game.dto.PlayerLocationDto;
 import go.tetz.where_back.game.service.GameRoomQueryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
 
+@Tag(name = "게임 WebSocket", description = "실시간 위치 브로드캐스트 (STOMP /app/game/{roomId}/location)")
 @Controller
 @RequiredArgsConstructor
 @Slf4j

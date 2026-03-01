@@ -1,12 +1,17 @@
 package go.tetz.where_back;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "홈", description = "메인 페이지")
 @RestController
 @RequestMapping("/")
 public class HomeController {
+
+    @Operation(summary = "메인 페이지", description = "스웨거 및 카카오 로그인 링크")
     @GetMapping(produces = "text/html")
     public String home() {
         return """
