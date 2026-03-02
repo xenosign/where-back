@@ -14,7 +14,7 @@ public interface LocationMarkerRepository extends JpaRepository<LocationMarker, 
 
     List<LocationMarker> findByRegionId(Long regionId);
 
-    List<LocationMarker> findByRegionName(String regionName);
+    List<LocationMarker> findByRegion_Name(String regionName);
 
     @Query(value = "SELECT *, " +
             "(6371 * acos(cos(radians(:lat)) * cos(radians(latitude)) * " +

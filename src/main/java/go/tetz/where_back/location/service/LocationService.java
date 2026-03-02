@@ -88,7 +88,7 @@ public class LocationService {
     }
 
     public List<MarkerResponse> getMarkersByRegionName(String regionName) {
-        return markerRepository.findByRegionName(regionName).stream()
+        return markerRepository.findByRegion_Name(regionName).stream()
                 .map(MarkerResponse::from)
                 .collect(Collectors.toList());
     }
