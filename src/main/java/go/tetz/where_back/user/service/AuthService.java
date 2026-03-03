@@ -94,8 +94,13 @@ public class AuthService {
                     String.class
             );
 
+            String body = response.getBody();
+            if (body == null || body.isBlank()) {
+                throw new RuntimeException("카카오 액세스 토큰 응답이 비어 있습니다.");
+            }
+
             KakaoTokenResponse tokenResponse = objectMapper.readValue(
-                    response.getBody(),
+                    body,
                     KakaoTokenResponse.class
             );
 
@@ -147,8 +152,13 @@ public class AuthService {
                 String.class
         );
 
+        String body = response.getBody();
+        if (body == null || body.isBlank()) {
+            throw new RuntimeException("카카오 사용자 정보 응답이 비어 있습니다.");
+        }
+
         try {
-            return objectMapper.readValue(response.getBody(), KakaoUserInfo.class);
+            return objectMapper.readValue(body, KakaoUserInfo.class);
         } catch (Exception e) {
             log.error("카카오 사용자 정보 파싱 오류", e);
             throw new RuntimeException("사용자 정보 조회에 실패했습니다.");
