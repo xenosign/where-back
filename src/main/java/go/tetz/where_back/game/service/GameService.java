@@ -1,5 +1,6 @@
 package go.tetz.where_back.game.service;
 
+import go.tetz.where_back.common.exception.*;
 import go.tetz.where_back.game.dto.GameRoomCreateRequest;
 import go.tetz.where_back.game.entity.GameParticipant;
 import go.tetz.where_back.game.entity.GameRoom;
@@ -26,7 +27,7 @@ public class GameService {
 
     public GameRoom createRoom(GameRoomCreateRequest request, Long hostUserId) {
         UserEntity host = userRepository.findById(hostUserId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(hostUserId));
 
         GameRoom room = GameRoom.builder()
                 .name(request.getName())
@@ -50,21 +51,21 @@ public class GameService {
     @Transactional(readOnly = true)
     public GameRoom getRoom(Long roomId) {
         return gameRoomRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게임방입니다."));
+                .orElseThrow(() -> new GameRoomNotFoundException(roomId));
     }
 
     public GameParticipant joinRoom(Long roomId, Long userId) {
         GameRoom room = getRoom(roomId);
         if (!room.canJoin()) {
-            throw new IllegalStateException("참가할 수 없는 게임방입니다.");
+            throw new CannotJoinRoomException();
         }
 
         if (participantRepository.existsByGameRoomIdAndUserId(roomId, userId)) {
-            throw new IllegalStateException("이미 참가 중인 방입니다.");
+            throw new AlreadyJoinedException();
         }
 
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
         GameParticipant participant = GameParticipant.builder()
                 .gameRoom(room)
@@ -79,7 +80,7 @@ public class GameService {
 
     public void leaveRoom(Long roomId, Long userId) {
         GameParticipant participant = participantRepository.findByGameRoomIdAndUserId(roomId, userId)
-                .orElseThrow(() -> new IllegalArgumentException("참가자가 아닙니다."));
+                .orElseThrow(() -> new ParticipantNotFoundException(roomId, userId));
 
         GameRoom room = participant.getGameRoom();
         participantRepository.delete(participant);
@@ -90,14 +91,14 @@ public class GameService {
 
     public void setReady(Long roomId, Long userId, boolean ready) {
         GameParticipant participant = participantRepository.findByGameRoomIdAndUserId(roomId, userId)
-                .orElseThrow(() -> new IllegalArgumentException("참가자가 아닙니다."));
+                .orElseThrow(() -> new ParticipantNotFoundException(roomId, userId));
         participant.setReady(ready);
     }
 
     public void startGame(Long roomId, Long userId) {
         GameRoom room = getRoom(roomId);
         if (!room.getHostUserId().equals(userId)) {
-            throw new IllegalStateException("방장만 게임을 시작할 수 있습니다.");
+            throw new HostOnlyException();
         }
         room.startGame();
         log.info("게임 시작: roomId={}", roomId);

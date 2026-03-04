@@ -1,5 +1,7 @@
 package go.tetz.where_back.location.service;
 
+import go.tetz.where_back.common.exception.LocationMarkerNotFoundException;
+import go.tetz.where_back.common.exception.RegionNotFoundException;
 import go.tetz.where_back.location.dto.CreateMarkerRequest;
 import go.tetz.where_back.location.dto.CreateRegionRequest;
 import go.tetz.where_back.location.dto.MarkerResponse;
@@ -36,7 +38,7 @@ public class LocationService {
 
     public boolean isUserAtMarker(Double userLat, Double userLng, Long markerId, Double thresholdMeter) {
         LocationMarker marker = markerRepository.findById(markerId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 마커입니다."));
+                .orElseThrow(() -> new LocationMarkerNotFoundException(markerId));
 
         double distance = calculateDistance(userLat, userLng, marker.getLatitude(), marker.getLongitude());
 
@@ -60,7 +62,7 @@ public class LocationService {
     @Transactional
     public MarkerResponse createMarker(CreateMarkerRequest request) {
         Region region = regionRepository.findById(request.getRegionId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
+                .orElseThrow(() -> new RegionNotFoundException(request.getRegionId()));
         LocationMarker marker = LocationMarker.builder()
                 .name(request.getName())
                 .latitude(request.getLatitude())

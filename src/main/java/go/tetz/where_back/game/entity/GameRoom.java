@@ -1,5 +1,6 @@
 package go.tetz.where_back.game.entity;
 
+import go.tetz.where_back.common.exception.GameNotStartableException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -58,7 +59,7 @@ public class GameRoom {
 
     public void startGame() {
         if (this.status != GameStatus.WAITING) {
-            throw new IllegalStateException("대기 중인 방만 게임을 시작할 수 있습니다.");
+            throw new GameNotStartableException();
         }
         this.status = GameStatus.PLAYING;
     }

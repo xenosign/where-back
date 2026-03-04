@@ -1,6 +1,8 @@
 package go.tetz.where_back.user.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import go.tetz.where_back.common.exception.ErrorCode;
+import go.tetz.where_back.common.exception.OAuthException;
 import go.tetz.where_back.user.dto.AuthResponse;
 import go.tetz.where_back.user.dto.KakaoTokenResponse;
 import go.tetz.where_back.user.dto.KakaoUserInfo;
@@ -68,9 +70,11 @@ public class AuthService {
             String accessToken = getKakaoAccessToken(authorizationCode);
 
             return processKakaoLogin(accessToken);
+        } catch (OAuthException e) {
+            throw e;
         } catch (Exception e) {
             log.error("카카오 OAuth 로그인 처리 중 오류 발생", e);
-            throw new RuntimeException("OAuth 로그인 처리 중 오류가 발생했습니다.");
+            throw new OAuthException(ErrorCode.OAUTH_ERROR);
         }
     }
 
@@ -96,7 +100,7 @@ public class AuthService {
 
             String body = response.getBody();
             if (body == null || body.isBlank()) {
-                throw new RuntimeException("카카오 액세스 토큰 응답이 비어 있습니다.");
+                throw new OAuthException(ErrorCode.OAUTH_TOKEN_ERROR, "카카오 액세스 토큰 응답이 비어 있습니다.");
             }
 
             KakaoTokenResponse tokenResponse = objectMapper.readValue(
@@ -106,9 +110,11 @@ public class AuthService {
 
             return tokenResponse.getAccessToken();
 
+        } catch (OAuthException e) {
+            throw e;
         } catch (Exception e) {
             log.error("카카오 액세스 토큰 발급 오류", e);
-            throw new RuntimeException("액세스 토큰 발급에 실패했습니다.");
+            throw new OAuthException(ErrorCode.OAUTH_TOKEN_ERROR, e);
         }
     }
 
@@ -132,9 +138,11 @@ public class AuthService {
                             .build())
                     .build();
 
+        } catch (OAuthException e) {
+            throw e;
         } catch (Exception e) {
             log.error("카카오 로그인 처리 중 오류 발생", e);
-            throw new RuntimeException("로그인 처리 중 오류가 발생했습니다.");
+            throw new OAuthException(ErrorCode.OAUTH_ERROR);
         }
     }
 
@@ -154,14 +162,16 @@ public class AuthService {
 
         String body = response.getBody();
         if (body == null || body.isBlank()) {
-            throw new RuntimeException("카카오 사용자 정보 응답이 비어 있습니다.");
+            throw new OAuthException(ErrorCode.OAUTH_USER_INFO_ERROR, "카카오 사용자 정보 응답이 비어 있습니다.");
         }
 
         try {
             return objectMapper.readValue(body, KakaoUserInfo.class);
+        } catch (OAuthException e) {
+            throw e;
         } catch (Exception e) {
             log.error("카카오 사용자 정보 파싱 오류", e);
-            throw new RuntimeException("사용자 정보 조회에 실패했습니다.");
+            throw new OAuthException(ErrorCode.OAUTH_USER_INFO_ERROR, e);
         }
     }
 

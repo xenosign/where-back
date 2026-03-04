@@ -1,5 +1,6 @@
 package go.tetz.where_back.user.service;
 
+import go.tetz.where_back.common.exception.UserNotFoundException;
 import go.tetz.where_back.user.dto.KakaoUserInfo;
 import go.tetz.where_back.user.entity.UserEntity;
 import go.tetz.where_back.user.repository.UserRepository;
@@ -126,7 +127,7 @@ public class UserService {
 
     public UserEntity updateProfile(Long userId, String nickname, String profileImageUrl) {
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
         user.updateProfile(nickname, profileImageUrl);
         UserEntity updatedUser = userRepository.save(user);
@@ -139,7 +140,7 @@ public class UserService {
 
     public void deleteUser(Long userId) {
         if (!userRepository.existsById(userId)) {
-            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+            throw new UserNotFoundException(userId);
         }
         userRepository.deleteById(userId);
         log.info("사용자 삭제: userId={}", userId);
